@@ -3,31 +3,32 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "../../api/scheduleApi";
 import { Table, Button } from "react-bootstrap";
 import { CgAddR } from "react-icons/cg";
-
+import { HiArchiveBoxArrowDown } from "react-icons/hi2";
 const ScheduleDetail = () => {
-    const id = useParams();
+    const { id } = useParams();
     const navigate = useNavigate();
     const [schedules, setSchedules] = useState([]);
     useEffect(() => {
         const fetchScheduleDetail = async () => {
             try {
-                const response = await axios.getScheduleDetail(id);
+                const response = await axios.getScheduleDetail({ id });
                 if (response) {
                     setSchedules(response);
                 }
             } catch (error) {
+                console.error("Lỗi khi xem chi tiết buổi học", error);
             }
         };
         fetchScheduleDetail();
     }, []);
-
     const handleViewAddStudentPage = () => {
-        navigate("/schedules/add");
+        navigate(`/schedules/${id}/add`);
     };
 
     return <>
         <h2 className="text-center">Danh Sách Sinh Viên Trong Buổi Học</h2>
-        <Button variant="success" className="mb-3" onClick={handleViewAddStudentPage}><CgAddR className="fs-3" /></Button>
+        <Button className="mb-3" onClick={handleViewAddStudentPage}><CgAddR className="fs-3" /></Button>
+        <Button className="mb-3"><HiArchiveBoxArrowDown className="fs-3"/></Button>
         <Table striped bordered hover>
             <thead>
                 <tr className="text-center align-middle">
