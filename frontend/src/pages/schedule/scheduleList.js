@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
 import scheduleApi from "../../api/scheduleApi";
+import Middleware from "../../components/Middleware";
 
 import Table from 'react-bootstrap/Table';
 import ReactPaginate from 'react-paginate';
 import { useNavigate, useLocation } from 'react-router-dom';
+import { jwtDecode } from "jwt-decode";
 
 const ScheduleList = () => {
     const navigate = useNavigate();
@@ -22,14 +24,15 @@ const ScheduleList = () => {
         if (getPage !== currentPage) {
             setCurrentPage(getPage);
         }
-    }, [location.search, currentPage]); // Chỉ theo dõi `location.search`
+    }, [location.search, currentPage]);
 
 
     useEffect(() => {
         const fetchSchedules = async () => {
             setLoading(true);
+            const user = jwtDecode(localStorage.getItem("authToken"));
             try {
-                const data = await scheduleApi.getAllSchedule(currentPage);
+                const data = await scheduleApi.getAllSchedule(currentPage, user.lecturer_id);
                 if (data) {
                     setSchedules(data.schedules);
                     setTotalPage(data.totalPage);
@@ -64,6 +67,7 @@ const ScheduleList = () => {
     };
     return (
         <>
+            <Middleware />
             <Table striped bordered hover>
                 <thead>
                     <tr className="text-center align-middle">

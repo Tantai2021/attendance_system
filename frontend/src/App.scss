@@ -16,3 +16,22 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#reader {
+  width: 300px !important;
+  height: 300px !important;
+  margin: auto;
+  border-radius: 10px;
+  /* Bo góc nhẹ cho đẹp */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: black;
+}
+
+video {
+  object-fit: cover !important;
+  width: 100% !important;
+  height: auto !important;
+}

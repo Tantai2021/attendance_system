@@ -1,33 +1,41 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const User = require("../models/user");
-const { Lecturer } = require("../models");
+const { Lecturer, Student } = require("../models");
 
 const SECRET_KEY = "123456789";
 const authController = {
     getUser: async (email, password) => {
+        const user = await User.findOne({
+            where: { email }
+        });
+        console.log("USER: ", user)
         try {
-            const user = await User.findOne({
-                where: { email }
-            });
             if (user) {
-                if (user.role === "lecturer") {
-                    const isMatch = await authController.checkPassword(password, user.password);
+                const isMatch = await authController.checkPassword(password, user.password);
+                if (isMatch) {
                     const lecturer = await Lecturer.findOne({
                         where: { email: user.email }
                     })
-                    if (isMatch) {
-                        const userInfo = {
-                            ...user.toJSON(),
-                            info: lecturer ? lecturer.toJSON() : null
-                        };
-                        return {
-                            token: authController.generateToken(userInfo),
-                        };
-                    } else
-                        return { error: "Mật khẩu không chính xác" }
+                    const student = await Student.findOne({
+                        where: { email: user.email }
+                    })
+                    console.log(student);
+
+                    let userInfo = {
+                        ...user.toJSON(),
+                        info: null // Giá trị mặc định nếu không tìm thấy
+                    };
+                    if (lecturer) {
+                        userInfo.info = lecturer.toJSON();
+                    } else if (student) {
+                        userInfo.info = student.toJSON();
+                    }
+                    return {
+                        token: authController.generateToken(userInfo),
+                    };
                 } else
-                    return { error: "Chỉ giảng viên mới có thể truy cập" };
+                    return { error: "Mật khẩu không chính xác" }
             } else
                 return { error: "Tài khoản không tồn tại" };
         } catch (error) {

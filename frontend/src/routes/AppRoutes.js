@@ -17,6 +17,7 @@ import AuthRegister from "../pages/auth/register";
 import AuthLogout from "../pages/auth/logout";
 
 const AppRoutes = () => {
+
     return (
         <Router>
             <Header />

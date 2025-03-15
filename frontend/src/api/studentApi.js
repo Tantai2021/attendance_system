@@ -25,6 +25,6 @@ const studentApi = {
             console.error("Lỗi khi tìm sinh viên", error);
             return [];
         }
-    }
+    },
 };
 export default studentApi;

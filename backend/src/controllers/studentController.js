@@ -1,5 +1,6 @@
 const models = require("../models/index");
 const { Op } = require("sequelize");
+const QRCode = require("qrcode");
 
 const StudentController = {
     getAllStudent: async (req, res) => {
@@ -41,7 +42,8 @@ const StudentController = {
             console.error("Lỗi khi tìm sinh viên:", error);
             return res.status(500).json({ error: "Lỗi server!" });
         }
-    }
+    },
+   
 };
 
 module.exports = StudentController;

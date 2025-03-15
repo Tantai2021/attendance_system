@@ -1,8 +1,8 @@
 const express = require("express");
-const { getStudentsBySession } = require("../controllers/attendanceController");
-
 const router = express.Router();
 
-router.get("/session/:schedule_id", getStudentsBySession);
+const AttendanceController = require("../controllers/attendanceController");
+
+router.post("/addStudent", AttendanceController.addStudent);
 
 module.exports = router;

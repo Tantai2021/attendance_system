@@ -14,7 +14,6 @@ function Header() {
             const token = localStorage.getItem("authToken");
             if (token) {
                 const userLoggedIn = jwtDecode(token);
-                console.log(userLoggedIn)
                 setUser(userLoggedIn);
             }
         } catch (error) {
@@ -22,6 +21,7 @@ function Header() {
             localStorage.removeItem("authToken"); // Xóa token lỗi
             navigate("/auth/login"); // Điều hướng về trang đăng nhập
         }
+
     }, [navigate]);
     const handleLogout = () => {
         localStorage.removeItem("authToken");
@@ -42,7 +42,10 @@ function Header() {
                                 <NavDropdown.Item onClick={handleLogout}>Đăng xuất</NavDropdown.Item>
                             </NavDropdown>
                         ) : (
-                            <Nav.Link href="/auth/login">Đăng nhập</Nav.Link>
+                            <>
+                                <Nav.Link href="/auth/login" className="fs-5">Đăng nhập</Nav.Link>
+                                <Nav.Link href="/auth/register" className="fs-5">Đăng ký</Nav.Link>
+                            </>
                         )}
                     </Nav>
                 </Navbar.Collapse>

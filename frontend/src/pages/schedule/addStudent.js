@@ -1,14 +1,17 @@
-import studentApi from "../../api/studentApi";
+import StudentApi from "../../api/studentApi";
+import AttendanceApi from "../../api/attendanceApi";
 import { useEffect, useState } from "react";
 import { Table, Button, Form } from "react-bootstrap";
 import { FiSearch } from "react-icons/fi";
 import { debounce } from "lodash";
+import { useParams } from "react-router-dom";
 const AddStudentPage = () => {
     const [students, setStudents] = useState([]);
     const [query, setQuery] = useState("");
+    const { id } = useParams();
     useEffect(() => {
         const fetchStudents = async (req, res) => {
-            const response = await studentApi.getAllStudents();
+            const response = await StudentApi.getAllStudents();
             if (response.length > 0) {
                 setStudents(response);
             }
@@ -18,7 +21,7 @@ const AddStudentPage = () => {
 
     const handleSearch = debounce(async (searchQuery) => {
         try {
-            let foundStudent = await studentApi.getStudentByConditions(searchQuery);
+            let foundStudent = await StudentApi.getStudentByConditions(searchQuery);
             if (foundStudent.length > 0) {
                 setStudents(foundStudent);
             }
@@ -32,6 +35,13 @@ const AddStudentPage = () => {
         setQuery(query);
         handleSearch(query);
     }
+    const handleAddScheduleStudent = async (student_id) => {
+        const response = await AttendanceApi.addStudent({
+            schedule_id: id,
+            student_id: student_id
+        });
+        console.log(response);
+    };
     return (
         <>
             <Form.Group className="mb-3 d-flex">
@@ -52,7 +62,6 @@ const AddStudentPage = () => {
                         <th>Mã SV</th>
                         <th>Họ và tên</th>
                         <th>Giới tính</th>
-                        <th>Ngày sinh</th>
                         <th>Chuyên ngành</th>
                         <th>Lớp</th>
                         <th>Khóa</th>
@@ -63,17 +72,16 @@ const AddStudentPage = () => {
                 </thead>
                 <tbody>
                     {students.map((student) => (
-                        <tr key={student.id}>
+                        <tr key={student.id} className="text-center ">
                             <td>{student.student_id}</td>
                             <td>{student.full_name}</td>
                             <td>{student.gender}</td>
-                            <td>{student.birth_place}</td>
                             <td>{student.major}</td>
                             <td>{student.class}</td>
                             <td>{student.course_year}</td>
                             <td>{student.faculty}</td>
                             <td>{student.advisor}</td>
-                            <td><Button variant="primary">Thêm</Button></td>
+                            <td><Button variant="primary" onClick={() => handleAddScheduleStudent(student.student_id)}>Thêm</Button></td>
                         </tr>
                     ))}
                 </tbody>

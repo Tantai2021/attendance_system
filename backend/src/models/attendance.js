@@ -23,10 +23,6 @@ const Attendance = sequelize.define("attendances", {
         type: DataTypes.ENUM("Present", "Absent", "Late"),
         allowNull: false
     },
-    session_number: {
-        type: DataTypes.INTEGER,
-        allowNull: false
-    },
 }, {
     timestamps: true, // Tự động thêm created_at & updated_at
     underscored: true, // Chuyển camelCase thành snake_case

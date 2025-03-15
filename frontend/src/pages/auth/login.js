@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Button, Form, Card, Container, Toast, ToastContainer, Alert } from 'react-bootstrap';
+import { Button, Form, Card, Container, Toast, ToastContainer } from 'react-bootstrap';
 import { useLocation, useNavigate } from "react-router-dom";
 import { jwtDecode } from 'jwt-decode';
 
@@ -22,13 +22,20 @@ const LoginPage = () => {
             setIsLoggedIn(true);
             const user = jwtDecode(token);
             if (user) {
-                navigate("/schedules");
+                if (user.role !== "lecturer") {
+                    navigate("/unauth"); // Điều hướng nếu không phải giảng viên
+                    return;
+                }
+                setTimeout(() => {
+                    navigate("/schedules");
+                }, 700);
             }
         }
-    }, []);
+    }, [isLoggedIn, navigate]);
     const handleSubmit = async (event) => {
         event.preventDefault();
         if (!formData.email || !formData.password) {
+            setIsLoggedIn(false);
             setToast({
                 status: true,
                 title: "Lỗi",
@@ -47,6 +54,7 @@ const LoginPage = () => {
                     body: res.message,
                     variant: "success"
                 });
+                setIsLoggedIn(true);
                 localStorage.setItem("authToken", res.token);
             } else {
                 setToast({
@@ -55,9 +63,11 @@ const LoginPage = () => {
                     body: res.message || "Đăng nhập thất bại",
                     variant: "danger"
                 });
+                setIsLoggedIn(false);
             }
         } catch (error) {
             console.error("Error sending data:", error);
+            setIsLoggedIn(false);
             setToast({
                 status: true,
                 title: "Lỗi",
